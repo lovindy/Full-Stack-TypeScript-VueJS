@@ -1,34 +1,34 @@
-// app.ts
-import express from 'express';
-import type { Express, Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import morgan from 'morgan'
+import express from "express";
+import type { Express, Request, Response, NextFunction } from "express";
+import cors from "cors";
+import morgan from "morgan";
+import authRoutes from "./routes/auth";
 
 const app: Express = express();
 
 // Middleware
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'Hello, World!' });
+// Base Route
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello, World!");
 });
 
-// Routes
-app.get('/api/v1/health', (req: Request, res: Response) => {
-    res.json({ status: 'OK' });
-});
+// Sub Routes
+app.use("/api/v1/auth", authRoutes);
 
-app.get('/api/v1/test', (req: Request, res: Response) => {
-    res.json({ message: 'API is working!' });
-});
-
-// Error handling middleware - needs all 4 parameters
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+// Error handling
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || "Something went wrong!",
+      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    },
+  });
 });
 
 export default app;

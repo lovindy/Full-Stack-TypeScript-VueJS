@@ -16,7 +16,7 @@ export const useMainStore = defineStore("main", {
 
     async fetchUser() {
       // Example API call
-      const { data } = await useFetch("/api/user");
+      const { data } = await useFetch("/api/v1/user");
       this.user = data.value;
     },
   },
