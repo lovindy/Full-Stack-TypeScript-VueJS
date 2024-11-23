@@ -1,10 +1,13 @@
-// src/routes/auth.ts
 import { Router } from "express";
-import { user, login } from "../controllers/userController";
+import { getAllUsers, getUserById } from "../controllers/userController";
+import { protect } from "../middleware/auth";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+// Route to get all users
+router.get("/", protect, getAllUsers);
+
+// Route to get a user by ID
+router.get("/:id", getUserById);
 
 export default router;

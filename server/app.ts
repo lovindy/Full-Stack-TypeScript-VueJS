@@ -2,7 +2,7 @@ import express from "express";
 import type { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import morgan from "morgan";
-import authRoutes from "./routes/auth";
+import routes from "./routes";
 
 const app: Express = express();
 
@@ -17,8 +17,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });
 
-// Sub Routes
-app.use("/api/v1/auth", authRoutes);
+// Use all the routes from the routes folder
+app.use("/api/v1", routes);
 
 // Error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
