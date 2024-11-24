@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "Your App Name",
+      title: "SeangDev App",
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -21,7 +21,18 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || "http://localhost:3000",
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8080/api/v1",
+    },
+  },
+
+  nitro: {
+    devProxy: {
+      "/api/v1": {
+        target: "http://localhost:8080/api/v1",
+        changeOrigin: true,
+        prependPath: true,
+      },
     },
   },
 

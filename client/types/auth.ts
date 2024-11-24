@@ -11,7 +11,7 @@ export interface AuthResponse {
 }
 
 export interface ApiResponse<T = any> {
-  data?: T;
+  data?: T | null;
   message: string;
   status: string;
   error?: string;

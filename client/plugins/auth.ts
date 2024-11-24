@@ -1,5 +1,10 @@
 // plugins/auth.ts
 export default defineNuxtPlugin(async (nuxtApp) => {
-  const auth = useAuthStore();
-  auth.initializeAuth();
+  // Wait for the app to be mounted before initializing auth
+  if (process.client) {
+    const authStore = useAuthStore();
+    nuxtApp.hook("app:mounted", () => {
+      authStore.initializeAuth();
+    });
+  }
 });

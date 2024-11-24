@@ -1,8 +1,15 @@
 // stores/useAuth.ts
 import { defineStore } from "pinia";
 import type { User, AuthResponse, ApiResponse } from "~/types/auth";
+import { useApi } from "~/composable/useApi";
 
 export const useAuthStore = defineStore("auth", () => {
+  // Get the base api
+  const { fetchApi } = useApi();
+
+  // Get the runtime config
+  const config = useRuntimeConfig();
+
   const user = ref<User | null>(null);
   const token = ref<string | null>(null);
   const isAuthenticated = computed(() => !!token.value);
@@ -40,7 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
   const register = async (email: string, password: string, name: string) => {
     try {
       const response = await $fetch<ApiResponse<AuthResponse>>(
-        "/api/auth/register",
+        "/auth/register",
         {
           method: "POST",
           body: { email, password, name },
@@ -65,13 +72,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await $fetch<ApiResponse<AuthResponse>>(
-        "/api/auth/login",
-        {
-          method: "POST",
-          body: { email, password },
-        }
-      );
+      const response = await $fetch<ApiResponse<AuthResponse>>("/auth/login", {
+        method: "POST",
+        body: { email, password },
+      });
 
       if (response.data) {
         setAuth(response.data);
@@ -88,7 +92,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = async () => {
     try {
-      await $fetch<ApiResponse>("/api/auth/logout", {
+      await $fetch<ApiResponse>("/auth/logout", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token.value}`,
@@ -109,7 +113,7 @@ export const useAuthStore = defineStore("auth", () => {
     newPassword: string
   ) => {
     try {
-      const response = await $fetch<ApiResponse>("/api/auth/change-password", {
+      const response = await $fetch<ApiResponse>("/auth/change-password", {
         method: "PUT",
         body: { currentPassword, newPassword },
         headers: {
@@ -128,7 +132,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const forgotPassword = async (email: string) => {
     try {
-      const response = await $fetch<ApiResponse>("/api/auth/forgot-password", {
+      const response = await $fetch<ApiResponse>("/auth/forgot-password", {
         method: "POST",
         body: { email },
       });
@@ -147,7 +151,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const resetPassword = async (token: string, newPassword: string) => {
     try {
-      const response = await $fetch<ApiResponse>("/api/auth/reset-password", {
+      const response = await $fetch<ApiResponse>("/auth/reset-password", {
         method: "PUT",
         body: { token, newPassword },
       });
@@ -165,7 +169,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (!token.value) return;
 
     try {
-      const response = await $fetch<ApiResponse<User>>("/api/user", {
+      const response = await $fetch<ApiResponse<User>>("/user", {
         headers: {
           Authorization: `Bearer ${token.value}`,
         },

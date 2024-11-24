@@ -9,7 +9,7 @@
 const message = ref('Start building your app!')
 
 // Example of using composables
-const { data: someData } = await useFetch('/api')
+const { data: someData } = await useFetch('/')
 </script>
 
 <style scoped>
